@@ -257,51 +257,84 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 2rem;
+    gap: clamp(1.5rem, 6vw, 3.5rem);
     width: 100%;
     margin-top: 1rem;
   }
+
+  .playlist-row .envelope-img {
+    width: clamp(140px, 38vw, 260px);
+    height: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
   .vinyl-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 1rem;
     cursor: pointer;
+    flex-shrink: 0;
   }
-  .vinyl-text span {
-    display: block;
-    font-family: 'Great Vibes', cursive;
-    font-size: 2rem;
-    color: #2C3B2E;
+
+  .vinyl-wrapper {
+    position: relative;
+    width: clamp(190px, 50vw, 360px);
+    height: clamp(140px, 38vw, 260px);
+    flex-shrink: 0;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
   }
-  .vinyl-text small {
-    font-family: 'Jost', sans-serif;
-    letter-spacing: 2px;
-    font-size: 0.7rem;
-    text-transform: uppercase;
+
+  .vinyl-container:hover .vinyl-wrapper {
+    transform: scale(1.04) translateY(-4px);
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));
   }
-  .vinyl-record {
-    width: 80px;
-    height: 80px;
-    background: #111;
+
+  .vinyl-container:active .vinyl-wrapper {
+    transform: scale(0.96) translateY(2px);
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+    transition: transform 0.1s ease, filter 0.1s ease;
+  }
+  
+  .vinyl-disc {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: clamp(140px, 38vw, 260px);
+    height: clamp(140px, 38vw, 260px);
+    transform: translateY(-50%);
+    transform-origin: center center;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    transition: transform 0.3s;
+    object-fit: cover;
+    z-index: 1;
+    transition: left 0.5s ease;
   }
-  .vinyl-record::before {
-    content: '';
-    width: 30px;
-    height: 30px;
-    background: #FAF7F2;
-    border-radius: 50%;
-    border: 2px solid #D4AF37;
+  
+  .vinyl-cover {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: clamp(140px, 38vw, 260px);
+    height: clamp(140px, 38vw, 260px);
+    transform: translateY(-50%);
+    object-fit: contain;
+    z-index: 2;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+    transition: left 0.5s ease;
   }
-  .vinyl-container.playing .vinyl-record {
-    animation: spin 3s linear infinite;
+
+  .vinyl-container.playing .vinyl-disc {
+    left: 35%;
+    animation: spinDisc 2.5s linear infinite;
   }
-  @keyframes spin { 100% { transform: rotate(360deg); } }
+  .vinyl-container.playing .vinyl-cover {
+    left: 0;
+  }
+  
+  @keyframes spinDisc {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to   { transform: translateY(-50%) rotate(360deg); }
+  }
 
   /* ════ MAIN INVITE & PHOTO OVERLAP ════ */
   .collage-row {
@@ -362,6 +395,11 @@
     text-align: center;
     padding: 2rem;
     cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .details-circle:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
   }
   .details-circle h3 {
     font-family: 'Great Vibes', cursive;
@@ -430,7 +468,6 @@
     box-shadow: 0 12px 40px rgba(44,59,46,0.25), 0 3px 8px rgba(0,0,0,0.1);
   }
 
-  /* Revealed content underneath */
   .scratch-reveal {
     position: absolute;
     inset: 0;
@@ -481,7 +518,6 @@
     transition: none;
   }
 
-  /* Animate reveal content in when .revealed is added */
   .scratch-reveal.revealed .reveal-pre {
     animation: revealFadeUp 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.05s forwards;
   }
@@ -498,7 +534,6 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* Scratch canvas sits on top */
   #scratch-canvas {
     position: absolute;
     inset: 0;
@@ -508,7 +543,6 @@
     z-index: 1;
   }
 
-  /* Sparkle container — above canvas, no pointer events */
   #sparkle-container {
     position: absolute;
     inset: 0;
@@ -528,7 +562,6 @@
     100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
   }
 
-  /* Custom cursor dot */
   #scratch-cursor {
     position: fixed;
     width: 36px;
@@ -548,7 +581,6 @@
     background: rgba(255,255,255,0.22);
   }
 
-  /* Countdown box */
   .countdown-box {
     background: #fff;
     padding: 1.5rem 2rem;
@@ -627,15 +659,12 @@
   <div class="scrapbook-container" id="main-content">
     
     <div class="playlist-row">
-      <div class="img-placeholder floral-placeholder-1" style="width: 100px; height: 100px; border-radius: 0;">
-        Flower Box
-      </div>
+      <img src="Envelope_Opened.png" alt="Opened Envelope" class="envelope-img">
       <div class="vinyl-container" id="vinyl-btn" onclick="toggleMusic()">
-        <div class="vinyl-text">
-          <span>Playlist</span>
-          <small>Click Here</small>
+        <div class="vinyl-wrapper">
+          <img src="Vinyl_Disc.png"  class="vinyl-disc"  alt="Vinyl Disc">
+          <img src="Vinyl_Cover.png" class="vinyl-cover" alt="Vinyl Cover">
         </div>
-        <div class="vinyl-record"></div>
       </div>
     </div>
 
@@ -649,7 +678,7 @@
         <p class="pre-title">Invitation<br>To Celebrate<br>The Wedding Of</p>
         <h3>Tanuj<br>&amp;<br>Kanchan</h3>
         <p style="font-style: italic; font-size: 0.8rem; margin-top: 1.5rem; color: #666;">
-          The Grand Palace<br>Pune, Maharashtra
+          Indraprashta Tower<br>Akola, Maharashtra
         </p>
       </div>
 
@@ -658,8 +687,8 @@
       </div>
     </div>
 
-    <div class="details-circle">
-      <h3>The Details</h3>
+    <div class="details-circle" onclick="window.open('https://www.google.com/maps/search/?api=1&query=P276%2BM2R%2C+New+Radhakisan+Plots%2C+Ranpise+Nagar%2C+Akola%2C+Maharashtra+444005', '_blank')">
+      <h3>The Venue</h3>
       <p class="pre-title">Click Here</p>
       <div class="img-placeholder key-placeholder">Key</div>
       <div class="polaroid" style="position: absolute; bottom: -20px; right: 20px; width: 80px; height: 100px; --rot: 12; padding: 5px 5px 20px 5px;">
@@ -707,6 +736,8 @@
           <div class="cd-item"><span id="cdM">--</span><small>Min</small></div>
           <div class="cd-item"><span id="cdS">--</span><small>Sec</small></div>
         </div>
+        <p style="margin-top: 1.2rem; font-family: 'Jost', sans-serif; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #aaa;">Until the Big Day</p>
+        <p style="margin-top: 0.5rem; font-family: 'Great Vibes', cursive; font-size: 1.8rem; color: #2C3B2E; line-height: 1.2;">With love &amp; gratitude,<br>Tanuj and Kanchan</p>
       </div>
     </div>
 
@@ -767,11 +798,9 @@
   let fallbackTimer  = null;
   let lastX = null, lastY = null;
 
-  // ── Premium dark-green gold surface ───────────────────────
   function initScratch() {
     ctx.globalCompositeOperation = 'source-over';
 
-    // Deep green gradient
     const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
     bg.addColorStop(0.00, '#2e4030');
     bg.addColorStop(0.35, '#243228');
@@ -780,7 +809,6 @@
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Diagonal gold shimmer streaks
     ctx.globalAlpha = 0.06;
     for (let i = -canvas.height; i < canvas.width + canvas.height; i += 22) {
       ctx.beginPath();
@@ -790,7 +818,6 @@
       ctx.lineWidth = 7;
       ctx.stroke();
     }
-    // Fine noise
     ctx.globalAlpha = 0.035;
     for (let i = 0; i < 2400; i++) {
       ctx.beginPath();
@@ -800,26 +827,22 @@
     }
     ctx.globalAlpha = 1;
 
-    // Soft gold glow at centre
     const glow = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 10, canvas.width/2, canvas.height/2, canvas.width*0.7);
     glow.addColorStop(0, 'rgba(212,175,55,0.1)');
     glow.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Gold embossed text
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     const cx = canvas.width/2, cy = canvas.height/2;
 
-    // Shadow
     ctx.fillStyle = 'rgba(0,0,0,0.5)';
     ctx.font = 'bold 16px Jost, sans-serif';
     ctx.fillText('✦  SCRATCH HERE  ✦', cx+1, cy-11);
     ctx.font = '11px Jost, sans-serif';
     ctx.fillText('to reveal the wedding date', cx+1, cy+15);
 
-    // Gold gradient text
     const gold = ctx.createLinearGradient(0, cy-20, 0, cy+20);
     gold.addColorStop(0,   '#f0dc82');
     gold.addColorStop(0.4, '#D4AF37');
@@ -836,7 +859,6 @@
   }
   initScratch();
 
-  // ── Coordinate helper ──────────────────────────────────────
   function getPos(e) {
     const rect = canvas.getBoundingClientRect();
     const src  = e.touches ? e.touches[0] : e;
@@ -848,7 +870,6 @@
     };
   }
 
-  // ── Gold sparkle burst ─────────────────────────────────────
   const GOLD = ['#f0dc82','#D4AF37','#e8c840','#fffde0','#c8a820','#fff'];
   function spawnSparkles(x, y, count) {
     for (let i = 0; i < (count||6); i++) {
@@ -871,7 +892,6 @@
     }
   }
 
-  // ── Feathered gradient brush with smear trail ──────────────
   function paintAt(x, y) {
     const r = 28 + Math.random() * 5;
     const g = ctx.createRadialGradient(x, y, 0, x, y, r);
@@ -891,7 +911,6 @@
     e.preventDefault();
     const { x, y, cx, cy } = getPos(e);
 
-    // Smear trail
     if (lastX !== null) {
       const dist  = Math.hypot(x-lastX, y-lastY);
       const steps = Math.max(1, Math.floor(dist/5));
@@ -904,7 +923,6 @@
     }
     lastX = x; lastY = y;
 
-    // Throttled sparkles
     const now = Date.now();
     if (!doScratch._t || now - doScratch._t > 55) {
       doScratch._t = now;
@@ -917,7 +935,6 @@
     }
   }
 
-  // ── Progress poll every 500ms ──────────────────────────────
   setInterval(() => {
     if (scratchDone || !scratchStarted) return;
     try {
@@ -928,18 +945,15 @@
     } catch(err) {}
   }, 500);
 
-  // ── Reveal ─────────────────────────────────────────────────
   function completeReveal() {
     if (scratchDone) return;
     scratchDone = true;
     clearTimeout(fallbackTimer);
 
-    // Instant clear
     ctx.globalCompositeOperation = 'destination-out';
     ctx.fillStyle = 'rgba(0,0,0,1)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Celebratory sparkle burst across card
     for (let i = 0; i < 6; i++) {
       setTimeout(() => {
         for (let j = 0; j < 7; j++) {
@@ -952,10 +966,8 @@
       }, i * 70);
     }
 
-    // Animate date text in
     document.getElementById('scratch-reveal').classList.add('revealed');
 
-    // Show countdown after date settles
     setTimeout(() => {
       document.getElementById('countdown-box').classList.add('visible');
       tick();
@@ -963,7 +975,6 @@
     }, 1200);
   }
 
-  // ── Custom cursor ──────────────────────────────────────────
   canvas.addEventListener('mouseenter', () => scrCursor.style.display = 'block');
   canvas.addEventListener('mouseleave', () => { scrCursor.style.display = 'none'; isScratching = false; lastX = null; });
   window.addEventListener('mousemove',  (e) => { scrCursor.style.left = e.clientX+'px'; scrCursor.style.top = e.clientY+'px'; });
@@ -975,7 +986,6 @@
   canvas.addEventListener('touchmove',  doScratch, { passive: false });
   canvas.addEventListener('touchend',   () => { isScratching = false; lastX = null; });
 
-  // ── Countdown ─────────────────────────────────────────────
   const wDate = new Date('2026-06-26T12:30:00+05:30');
   function tick() {
     const diff = wDate - new Date();
