@@ -401,7 +401,7 @@
     color: #2C3B2E;
   }
 
-  /* ════ COUNTDOWN ════ */
+  /* ════ SCRATCH CARD + COUNTDOWN ════ */
   .countdown-section {
     position: relative;
     width: 100%;
@@ -409,19 +409,164 @@
     flex-direction: column;
     align-items: center;
     margin-top: 2rem;
+    gap: 1.5rem;
   }
+
+  .scratch-label {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #666;
+    text-align: center;
+  }
+
+  .scratch-card-wrapper {
+    position: relative;
+    width: 320px;
+    height: 190px;
+    border-radius: 20px;
+    overflow: visible;
+    box-shadow: 0 12px 40px rgba(44,59,46,0.25), 0 3px 8px rgba(0,0,0,0.1);
+  }
+
+  /* Revealed content underneath */
+  .scratch-reveal {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #f5ede8 0%, #ead5d5 60%, #e8d0cc 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .scratch-reveal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.5) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .scratch-reveal .reveal-pre {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #999;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: none;
+  }
+  .scratch-reveal .reveal-date {
+    font-family: 'Great Vibes', cursive;
+    font-size: 3.4rem;
+    color: #2C3B2E;
+    line-height: 1.1;
+    opacity: 0;
+    transform: scale(0.85) translateY(8px);
+    transition: none;
+    text-shadow: 0 2px 12px rgba(44,59,46,0.15);
+  }
+  .scratch-reveal .reveal-sub {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #888;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: none;
+  }
+
+  /* Animate reveal content in when .revealed is added */
+  .scratch-reveal.revealed .reveal-pre {
+    animation: revealFadeUp 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.05s forwards;
+  }
+  .scratch-reveal.revealed .reveal-date {
+    animation: revealPop 0.65s cubic-bezier(0.34,1.56,0.64,1) 0.15s forwards;
+  }
+  .scratch-reveal.revealed .reveal-sub {
+    animation: revealFadeUp 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.3s forwards;
+  }
+  @keyframes revealPop {
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  @keyframes revealFadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scratch canvas sits on top */
+  #scratch-canvas {
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    cursor: none;
+    touch-action: none;
+    z-index: 1;
+  }
+
+  /* Sparkle container — above canvas, no pointer events */
+  #sparkle-container {
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    pointer-events: none;
+    z-index: 3;
+    overflow: hidden;
+  }
+  .sparkle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: sparklePop 0.55s ease-out forwards;
+  }
+  @keyframes sparklePop {
+    0%   { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+  }
+
+  /* Custom cursor dot */
+  #scratch-cursor {
+    position: fixed;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.08);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 9998;
+    display: none;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
+    transition: transform 0.08s ease, background 0.15s ease;
+  }
+  #scratch-cursor.pressing {
+    transform: translate(-50%, -50%) scale(0.8);
+    background: rgba(255,255,255,0.22);
+  }
+
+  /* Countdown box */
   .countdown-box {
-    margin-top: 1rem;
-    background: #E8D5D5; 
-    padding: 2rem;
+    background: #fff;
+    padding: 1.5rem 2rem;
     border-radius: 20px;
     text-align: center;
-    width: 100%;
-    max-width: 400px;
+    width: 320px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .countdown-box.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
   .countdown-box h3 {
     font-family: 'Great Vibes', cursive;
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: #2C3B2E;
     margin-bottom: 1rem;
   }
@@ -434,11 +579,13 @@
     display: block;
     font-size: 1.5rem;
     font-weight: 500;
+    color: #2C3B2E;
   }
   .cd-item small {
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 1px;
+    color: #888;
   }
 
   /* Responsive fixes */
@@ -540,8 +687,20 @@
     </div>
 
     <div class="countdown-section">
-      <div class="countdown-box">
-        <h3>Countdown</h3>
+      <p class="scratch-label">✦ Scratch to reveal the date ✦</p>
+
+      <div class="scratch-card-wrapper">
+        <div class="scratch-reveal" id="scratch-reveal">
+          <span class="reveal-pre">Save the Date</span>
+          <span class="reveal-date">26 June 2026</span>
+          <span class="reveal-sub">Tanuj &amp; Kanchan</span>
+        </div>
+        <canvas id="scratch-canvas" width="320" height="190"></canvas>
+        <div id="sparkle-container"></div>
+      </div>
+
+      <div class="countdown-box" id="countdown-box">
+        <h3>Counting Down</h3>
         <div class="cd-row">
           <div class="cd-item"><span id="cdD">--</span><small>Days</small></div>
           <div class="cd-item"><span id="cdH">--</span><small>Hrs</small></div>
@@ -551,12 +710,15 @@
       </div>
     </div>
 
+    <div id="scratch-cursor"></div>
+
   </div>
 
 <script>
-  // Always start at the top on load/reload
+  // Always start at the top and lock scroll while splash is showing
   history.scrollRestoration = 'manual';
   window.scrollTo(0, 0);
+  document.body.style.overflow = 'hidden';
 
   // Splash Screen Logic
   function openInvite() {
@@ -564,6 +726,10 @@
     const main = document.getElementById('main-content');
 
     splash.classList.add('hidden');
+
+    // Reset scroll to top and unlock scrolling
+    window.scrollTo(0, 0);
+    document.body.style.overflow = '';
 
     setTimeout(() => {
       main.classList.add('visible');
@@ -591,7 +757,225 @@
     isPlaying = !isPlaying;
   }
 
-  // Countdown Logic
+  // ── Scratch Card ──────────────────────────────────────────
+  const canvas    = document.getElementById('scratch-canvas');
+  const ctx       = canvas.getContext('2d');
+  const sparkleC  = document.getElementById('sparkle-container');
+  const scrCursor = document.getElementById('scratch-cursor');
+  let scratchDone    = false;
+  let scratchStarted = false;
+  let fallbackTimer  = null;
+  let lastX = null, lastY = null;
+
+  // ── Premium dark-green gold surface ───────────────────────
+  function initScratch() {
+    ctx.globalCompositeOperation = 'source-over';
+
+    // Deep green gradient
+    const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    bg.addColorStop(0.00, '#2e4030');
+    bg.addColorStop(0.35, '#243228');
+    bg.addColorStop(0.65, '#2e4030');
+    bg.addColorStop(1.00, '#1e2e20');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Diagonal gold shimmer streaks
+    ctx.globalAlpha = 0.06;
+    for (let i = -canvas.height; i < canvas.width + canvas.height; i += 22) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i + canvas.height, canvas.height);
+      ctx.strokeStyle = '#D4AF37';
+      ctx.lineWidth = 7;
+      ctx.stroke();
+    }
+    // Fine noise
+    ctx.globalAlpha = 0.035;
+    for (let i = 0; i < 2400; i++) {
+      ctx.beginPath();
+      ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*1.2, 0, Math.PI*2);
+      ctx.fillStyle = Math.random() > 0.5 ? '#D4AF37' : '#fff';
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // Soft gold glow at centre
+    const glow = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 10, canvas.width/2, canvas.height/2, canvas.width*0.7);
+    glow.addColorStop(0, 'rgba(212,175,55,0.1)');
+    glow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Gold embossed text
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const cx = canvas.width/2, cy = canvas.height/2;
+
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.font = 'bold 16px Jost, sans-serif';
+    ctx.fillText('✦  SCRATCH HERE  ✦', cx+1, cy-11);
+    ctx.font = '11px Jost, sans-serif';
+    ctx.fillText('to reveal the wedding date', cx+1, cy+15);
+
+    // Gold gradient text
+    const gold = ctx.createLinearGradient(0, cy-20, 0, cy+20);
+    gold.addColorStop(0,   '#f0dc82');
+    gold.addColorStop(0.4, '#D4AF37');
+    gold.addColorStop(0.7, '#c8961e');
+    gold.addColorStop(1,   '#e8c84a');
+    ctx.fillStyle = gold;
+    ctx.font = 'bold 16px Jost, sans-serif';
+    ctx.fillText('✦  SCRATCH HERE  ✦', cx, cy-12);
+    ctx.fillStyle = '#c8a820';
+    ctx.font = '11px Jost, sans-serif';
+    ctx.fillText('to reveal the wedding date', cx, cy+14);
+
+    ctx.globalCompositeOperation = 'destination-out';
+  }
+  initScratch();
+
+  // ── Coordinate helper ──────────────────────────────────────
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const src  = e.touches ? e.touches[0] : e;
+    return {
+      x:  (src.clientX - rect.left) * (canvas.width  / rect.width),
+      y:  (src.clientY - rect.top)  * (canvas.height / rect.height),
+      cx: src.clientX,
+      cy: src.clientY
+    };
+  }
+
+  // ── Gold sparkle burst ─────────────────────────────────────
+  const GOLD = ['#f0dc82','#D4AF37','#e8c840','#fffde0','#c8a820','#fff'];
+  function spawnSparkles(x, y, count) {
+    for (let i = 0; i < (count||6); i++) {
+      const el    = document.createElement('div');
+      const size  = 3 + Math.random() * 4;
+      const angle = Math.random() * Math.PI * 2;
+      const dist  = 16 + Math.random() * 30;
+      el.className = 'sparkle';
+      el.style.cssText = `
+        width:${size}px;height:${size}px;
+        left:${x - size/2}px;top:${y - size/2}px;
+        background:${GOLD[Math.floor(Math.random()*GOLD.length)]};
+        --tx:${Math.cos(angle)*dist}px;
+        --ty:${Math.sin(angle)*dist}px;
+        animation-duration:${0.38 + Math.random()*0.28}s;
+        box-shadow:0 0 ${size+2}px rgba(212,175,55,0.9);
+      `;
+      sparkleC.appendChild(el);
+      el.addEventListener('animationend', () => el.remove());
+    }
+  }
+
+  // ── Feathered gradient brush with smear trail ──────────────
+  function paintAt(x, y) {
+    const r = 28 + Math.random() * 5;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0,   'rgba(0,0,0,1)');
+    g.addColorStop(0.55,'rgba(0,0,0,0.92)');
+    g.addColorStop(1,   'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  let isScratching = false;
+
+  function doScratch(e) {
+    if (!isScratching || scratchDone) return;
+    e.preventDefault();
+    const { x, y, cx, cy } = getPos(e);
+
+    // Smear trail
+    if (lastX !== null) {
+      const dist  = Math.hypot(x-lastX, y-lastY);
+      const steps = Math.max(1, Math.floor(dist/5));
+      for (let i = 1; i <= steps; i++) {
+        const t = i/steps;
+        paintAt(lastX + (x-lastX)*t, lastY + (y-lastY)*t);
+      }
+    } else {
+      paintAt(x, y);
+    }
+    lastX = x; lastY = y;
+
+    // Throttled sparkles
+    const now = Date.now();
+    if (!doScratch._t || now - doScratch._t > 55) {
+      doScratch._t = now;
+      spawnSparkles(x, y, 5);
+    }
+
+    if (!scratchStarted) {
+      scratchStarted = true;
+      fallbackTimer  = setTimeout(completeReveal, 8000);
+    }
+  }
+
+  // ── Progress poll every 500ms ──────────────────────────────
+  setInterval(() => {
+    if (scratchDone || !scratchStarted) return;
+    try {
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      let cleared = 0;
+      for (let i = 3; i < data.length; i += 4) if (data[i] < 128) cleared++;
+      if (cleared / (canvas.width * canvas.height) > 0.45) completeReveal();
+    } catch(err) {}
+  }, 500);
+
+  // ── Reveal ─────────────────────────────────────────────────
+  function completeReveal() {
+    if (scratchDone) return;
+    scratchDone = true;
+    clearTimeout(fallbackTimer);
+
+    // Instant clear
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = 'rgba(0,0,0,1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Celebratory sparkle burst across card
+    for (let i = 0; i < 6; i++) {
+      setTimeout(() => {
+        for (let j = 0; j < 7; j++) {
+          spawnSparkles(
+            20 + Math.random()*(canvas.width-40),
+            20 + Math.random()*(canvas.height-40),
+            4
+          );
+        }
+      }, i * 70);
+    }
+
+    // Animate date text in
+    document.getElementById('scratch-reveal').classList.add('revealed');
+
+    // Show countdown after date settles
+    setTimeout(() => {
+      document.getElementById('countdown-box').classList.add('visible');
+      tick();
+      setInterval(tick, 1000);
+    }, 1200);
+  }
+
+  // ── Custom cursor ──────────────────────────────────────────
+  canvas.addEventListener('mouseenter', () => scrCursor.style.display = 'block');
+  canvas.addEventListener('mouseleave', () => { scrCursor.style.display = 'none'; isScratching = false; lastX = null; });
+  window.addEventListener('mousemove',  (e) => { scrCursor.style.left = e.clientX+'px'; scrCursor.style.top = e.clientY+'px'; });
+
+  canvas.addEventListener('mousedown',  (e) => { isScratching = true; lastX = null; scrCursor.classList.add('pressing'); doScratch(e); });
+  canvas.addEventListener('mousemove',  doScratch);
+  canvas.addEventListener('mouseup',    () => { isScratching = false; lastX = null; scrCursor.classList.remove('pressing'); });
+  canvas.addEventListener('touchstart', (e) => { isScratching = true; lastX = null; doScratch(e); }, { passive: false });
+  canvas.addEventListener('touchmove',  doScratch, { passive: false });
+  canvas.addEventListener('touchend',   () => { isScratching = false; lastX = null; });
+
+  // ── Countdown ─────────────────────────────────────────────
   const wDate = new Date('2026-06-26T12:30:00+05:30');
   function tick() {
     const diff = wDate - new Date();
@@ -604,8 +988,6 @@
     document.getElementById('cdM').textContent = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
     document.getElementById('cdS').textContent = String(Math.floor(diff%60000/1000)).padStart(2,'0');
   }
-  tick(); 
-  setInterval(tick, 1000);
 </script>
 </body>
 </html>
