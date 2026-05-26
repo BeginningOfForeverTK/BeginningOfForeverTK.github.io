@@ -7,6 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     font-family: 'Cormorant Garamond', serif;
     background: #FAF7F2 url('Sof_Botanical_Background.png') center center / cover fixed;
@@ -60,7 +64,6 @@
     animation-timing-function: linear, ease-in-out;
     animation-iteration-count: infinite, infinite;
     animation-direction: normal, alternate;
-    /* Added deeper shadows so the petals pop nicely against the background */
     filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3));
   }
   @keyframes fall {
@@ -154,7 +157,7 @@
   
   /* ════ ENVELOPE WRAPPER & IMAGE STYLING ════ */
   #splash-envelope-wrapper {
-    position: relative; /* Allows pinning flowers to the corner */
+    position: relative; 
     cursor: pointer;
     opacity: 0;
     flex-shrink: 0;
@@ -174,14 +177,14 @@
   /* ════ CORNER OVERLAY FLOWERS ════ */
   .splash-flowers {
     position: absolute;
-    bottom: -30px; /* Pulls the flowers down past the envelope edge */
-    right: -40px;  /* Pulls the flowers right past the envelope edge */
-    width: clamp(120px, 30vw, 180px); /* Size relative to the envelope */
+    bottom: -30px; 
+    right: -40px;  
+    width: clamp(120px, 30vw, 180px); 
     height: auto;
-    z-index: 5; /* Sits above the envelope */
-    pointer-events: none; /* Allows the click to pass through to the wrapper */
+    z-index: 5; 
+    pointer-events: none; 
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
-    transform: rotate(15deg); /* Tilted aesthetic */
+    transform: rotate(15deg); 
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
   }
 
@@ -207,31 +210,6 @@
     transition: transform 0.1s ease, filter 0.1s ease;
   }
 
-  /* Mobile Animation Overrides */
-  @media(max-width: 600px) {
-    #splash-screen { gap: 3rem; }
-    
-    @keyframes envelopeEntranceMobile {
-      0% { opacity: 0; transform: translateY(30px) scale(0.95); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes elegantFloatMobile {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-6px) scale(1); }
-    }
-    #splash-envelope-wrapper {
-      animation: 
-        envelopeEntranceMobile 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) 1s forwards,
-        elegantFloatMobile 6s ease-in-out 2.8s infinite;
-    }
-    #splash-envelope-wrapper:hover #splash-envelope-img {
-      transform: scale(1.03) rotate(0deg); 
-    }
-    #splash-envelope-wrapper:hover .splash-flowers {
-      transform: scale(1.03) rotate(15deg); 
-    }
-  }
-
   /* ════ MAIN SCRAPBOOK CONTAINER ════ */
   .scrapbook-container {
     width: 100%;
@@ -242,7 +220,6 @@
     flex-direction: column;
     align-items: center;
     gap: 4rem;
-    /* Container itself is always visible; individual items handle their own reveal */
   }
 
   /* Typography */
@@ -253,6 +230,7 @@
     line-height: 1;
     text-align: center;
     margin: 1rem 0;
+    text-shadow: 0 4px 18px rgba(44, 59, 46, 0.1);
   }
   .pre-title {
     font-family: 'Jost', sans-serif;
@@ -320,6 +298,15 @@
     height: auto;
     object-fit: contain;
     flex-shrink: 0;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
+  }
+  .playlist-row .envelope-img:hover {
+    transform: scale(1.05) rotate(-2deg);
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));
+  }
+  .playlist-row .envelope-img:active {
+    transform: scale(0.97) rotate(0deg);
   }
 
   .vinyl-container {
@@ -416,6 +403,7 @@
     font-size: clamp(2.8rem, 6.5vw, 3.8rem);
     margin: clamp(1.2rem, 3vw, 1.8rem) 0;
     color: #2C3B2E;
+    text-shadow: 0 4px 18px rgba(44, 59, 46, 0.12);
   }
   .photo-left {
     position: absolute;
@@ -428,33 +416,36 @@
   }
   .floral-placeholder-1 {
     position: absolute;
-    right: 2%;
-    top: -8%;
-    width: clamp(140px, 22vw, 200px);
+    right: -2%;
+    top: -12%;
+    width: clamp(150px, 24vw, 220px);
     height: auto;
     z-index: 1;
     transform: rotate(15deg);
-    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.15));
+    filter: drop-shadow(0 10px 22px rgba(0,0,0,0.18));
     pointer-events: none;
   }
-  /* Preserve the tilt during the reveal-item animation */
   .floral-placeholder-1.reveal-item {
     transform: translateY(22px) rotate(15deg);
   }
   .floral-placeholder-1.reveal-item.revealed {
     transform: translateY(0) rotate(15deg);
+    animation: swayRight 7s ease-in-out 1.2s infinite;
+  }
+  @keyframes swayRight {
+    0%, 100% { transform: translateY(0) rotate(15deg); }
+    50%      { transform: translateY(-6px) rotate(18deg); }
   }
 
-  /* Bottom-left floral accent in collage-row, mirrors the top-right */
   .floral-bottom-left {
     position: absolute;
-    left: 0%;
-    bottom: -6%;
-    width: clamp(120px, 18vw, 170px);
+    left: -3%;
+    bottom: -10%;
+    width: clamp(130px, 20vw, 190px);
     height: auto;
     z-index: 1;
     transform: rotate(-25deg) scaleX(-1);
-    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.15));
+    filter: drop-shadow(0 10px 22px rgba(0,0,0,0.18));
     pointer-events: none;
   }
   .floral-bottom-left.reveal-item {
@@ -462,29 +453,37 @@
   }
   .floral-bottom-left.reveal-item.revealed {
     transform: translateY(0) rotate(-25deg) scaleX(-1);
+    animation: swayLeft 7.5s ease-in-out 1.4s infinite;
+  }
+  @keyframes swayLeft {
+    0%, 100% { transform: translateY(0) rotate(-25deg) scaleX(-1); }
+    50%      { transform: translateY(-5px) rotate(-22deg) scaleX(-1); }
   }
 
-  /* Decorative flowers peeking from the top-left of the venue circle */
   .floral-venue {
     position: absolute;
-    top: -22px;
-    left: -28px;
-    width: clamp(80px, 13vw, 110px);
+    top: -28px;
+    left: -34px;
+    width: clamp(95px, 15vw, 130px);
     height: auto;
     transform: rotate(-30deg);
-    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.15));
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,0.18));
     pointer-events: none;
+    animation: swayVenue 8s ease-in-out infinite;
+  }
+  @keyframes swayVenue {
+    0%, 100% { transform: rotate(-30deg) translateY(0); }
+    50%      { transform: rotate(-27deg) translateY(-3px); }
   }
 
-  /* Floral accent above the scratch card */
   .floral-countdown {
     position: absolute;
-    top: -10px;
-    left: 6%;
-    width: clamp(100px, 16vw, 140px);
+    top: -22px;
+    left: 4%;
+    width: clamp(110px, 17vw, 150px);
     height: auto;
     transform: rotate(-20deg);
-    filter: drop-shadow(0 6px 14px rgba(0,0,0,0.15));
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.18));
     pointer-events: none;
     z-index: 1;
   }
@@ -493,6 +492,34 @@
   }
   .floral-countdown.reveal-item.revealed {
     transform: translateY(0) rotate(-20deg);
+    animation: swayCountdown 6.8s ease-in-out 0.9s infinite;
+  }
+  @keyframes swayCountdown {
+    0%, 100% { transform: translateY(0) rotate(-20deg); }
+    50%      { transform: translateY(-4px) rotate(-23deg); }
+  }
+
+  .floral-countdown-right {
+    position: absolute;
+    top: -16px;
+    right: 4%;
+    width: clamp(90px, 14vw, 120px);
+    height: auto;
+    transform: rotate(28deg) scaleX(-1);
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.18));
+    pointer-events: none;
+    z-index: 1;
+  }
+  .floral-countdown-right.reveal-item {
+    transform: translateY(22px) rotate(28deg) scaleX(-1);
+  }
+  .floral-countdown-right.reveal-item.revealed {
+    transform: translateY(0) rotate(28deg) scaleX(-1);
+    animation: swayCountdownRight 7.3s ease-in-out 1.1s infinite;
+  }
+  @keyframes swayCountdownRight {
+    0%, 100% { transform: translateY(0) rotate(28deg) scaleX(-1); }
+    50%      { transform: translateY(-4px) rotate(25deg) scaleX(-1); }
   }
 
   /* ════ THE VENUE CIRCLE ════ */
@@ -513,22 +540,24 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   .details-circle:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.14);
   }
   .details-circle h3 {
     font-family: 'Great Vibes', cursive;
     font-size: 2.5rem;
     color: #2C3B2E;
+    text-shadow: 0 4px 16px rgba(44, 59, 46, 0.1);
   }
   .key-placeholder {
     position: absolute;
-    right: -20px;
+    right: -30px;
     top: 50%;
-    width: 80px;
-    height: 30px;
-    background: #ccc;
-    transform: rotate(15deg);
+    width: 90px;
+    height: auto;
+    transform: translateY(-50%) rotate(15deg);
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.18));
+    pointer-events: none;
   }
 
   /* ════ OUR STORY POLAROIDS ════ */
@@ -637,7 +666,12 @@
     animation: revealFadeUp 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.05s forwards;
   }
   .scratch-reveal.revealed .reveal-date {
-    animation: revealPop 0.65s cubic-bezier(0.34,1.56,0.64,1) 0.15s forwards;
+    animation: revealPop 0.65s cubic-bezier(0.34,1.56,0.64,1) 0.15s forwards,
+               dateBreath 4.5s ease-in-out 1s infinite;
+  }
+  @keyframes dateBreath {
+    0%, 100% { text-shadow: 0 2px 12px rgba(44,59,46,0.15); }
+    50%      { text-shadow: 0 2px 20px rgba(212,175,55,0.55), 0 0 10px rgba(212,175,55,0.3); }
   }
   .scratch-reveal.revealed .reveal-sub {
     animation: revealFadeUp 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.3s forwards;
@@ -752,7 +786,6 @@
     filter: blur(0);
   }
 
-  /* Polaroid reveal — preserves the existing rotation via --rot */
   .reveal-polaroid {
     opacity: 0;
     transform: translateY(22px) rotate(calc(var(--rot, 0) * 1deg));
@@ -768,12 +801,10 @@
     transform: rotate(calc(var(--rot, 0) * 1deg));
     filter: blur(0);
   }
-  /* Restore the polaroid hover transform after reveal */
   .polaroid.reveal-polaroid.revealed:hover {
     transform: rotate(0deg) scale(1.03);
   }
 
-  /* Line-by-line text reveal (inline-block so transforms work) */
   .reveal-line {
     display: inline-block;
     opacity: 0;
@@ -791,7 +822,6 @@
     filter: blur(0);
   }
 
-  /* Scale-up reveal pivoting from the top-left corner */
   .reveal-scale-tl {
     opacity: 0;
     transform: scale(0);
@@ -806,7 +836,6 @@
     transform: scale(1);
   }
 
-  /* Respect reduced-motion users */
   @media (prefers-reduced-motion: reduce) {
     .reveal-item, .reveal-polaroid, .reveal-line, .reveal-scale-tl {
       opacity: 1 !important;
@@ -816,18 +845,256 @@
     }
   }
 
+  /* ════ LETTER MODAL WITH TEXT OVERLAY ════ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75); 
+    backdrop-filter: blur(4px);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+  .modal-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  
+  /* Wrapper dynamically sizes itself to the image inside */
+  .letter-popup-wrapper {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    max-height: 95vh;
+    transform: translateY(0) scale(1);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+  }
+  .modal-overlay.hidden .letter-popup-wrapper {
+    transform: translateY(30px) scale(0.95);
+  }
+
+  /* The image defines the aspect ratio and bounds of the container */
+  .letter-popup-bg {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 800px; /* Scaled up maximum width */
+    max-height: 95vh; 
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));
+  }
+
+  /* Text sits absolutely positioned over the exact bounds of the image */
+  .letter-text-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 10% 8%; /* Scales perfectly with the image dimensions */
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    color: #222;
+    text-align: left;
+  }
+  .letter-text-overlay::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Typography scaled down cleanly for the overlay */
+  .letter-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
+    color: #2C3B2E;
+  }
+  .letter-p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(0.85rem, 1.8vw, 1.15rem);
+    line-height: 1.6;
+    margin-bottom: clamp(0.75rem, 1.5vw, 1.2rem);
+  }
+  .letter-subtitle {
+    font-family: 'Jost', sans-serif;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: clamp(1.5rem, 3vw, 2rem) 0 clamp(0.75rem, 1.5vw, 1rem);
+    color: #2C3B2E;
+  }
+  .letter-list {
+    list-style: none;
+    padding-left: 0;
+    font-family: 'Jost', sans-serif;
+    font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+    line-height: 1.6;
+    margin-bottom: clamp(1rem, 2vw, 1.5rem);
+  }
+  .letter-list li {
+    margin-bottom: 0.8rem;
+    position: relative;
+    padding-left: 1.2rem;
+  }
+  .letter-list li::before {
+    content: '○';
+    position: absolute;
+    left: 0;
+    color: #2C3B2E;
+    font-weight: bold;
+  }
+  .letter-list strong {
+    color: #2C3B2E;
+  }
+  .letter-sign-off {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(0.9rem, 1.8vw, 1.15rem);
+    margin-top: clamp(1.5rem, 3vw, 2rem);
+  }
+  .letter-signature {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(2.5rem, 5vw, 3.8rem);
+    color: #2C3B2E;
+    margin-top: 0.2rem;
+  }
+
   /* Responsive fixes */
-  @media(max-width: 600px) {
-    .photo-left {
-      position: relative;
-      left: 0; top: 0;
-      margin-bottom: -40px;
+  @media (max-width: 600px) {
+    body {
+      background-attachment: scroll;
+    }
+    .scrapbook-container {
+      padding: 2rem 1rem;
+      gap: 3rem;
+    }
+    .playlist-row {
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .playlist-row .envelope-img {
+      width: clamp(110px, 32vw, 170px);
+    }
+    .vinyl-wrapper {
+      width: clamp(150px, 42vw, 220px);
+      height: clamp(110px, 32vw, 170px);
+    }
+    .vinyl-disc,
+    .vinyl-cover {
+      width: clamp(110px, 32vw, 170px);
+      height: clamp(110px, 32vw, 170px);
     }
     .collage-row {
       flex-direction: column;
+      min-height: 0;
+      gap: 1rem;
+    }
+    .photo-left {
+      position: relative;
+      left: 0;
+      top: 0;
+      margin-bottom: -30px;
+      width: 150px;
+      height: 200px;
     }
     .main-invite-card {
-      width: 90%;
+      width: 92%;
+      max-width: 380px;
+      padding: 2.5rem 1.8rem;
+    }
+    .main-invite-card h3 {
+      font-size: clamp(2.4rem, 9vw, 3rem);
+      margin: 0.8rem 0;
+    }
+    .main-invite-card .pre-title {
+      font-size: 0.85rem;
+    }
+    .floral-placeholder-1 {
+      width: clamp(90px, 24vw, 130px);
+      right: -4%;
+      top: -3%;
+    }
+    .floral-bottom-left {
+      width: clamp(80px, 22vw, 120px);
+      left: -4%;
+      bottom: -3%;
+    }
+    .floral-venue {
+      width: 70px;
+      top: -14px;
+      left: -16px;
+    }
+    .floral-countdown {
+      width: 90px;
+      top: -14px;
+      left: 2%;
+    }
+    .floral-countdown-right {
+      width: 75px;
+      top: -10px;
+      right: 2%;
+    }
+    .details-circle {
+      width: 220px;
+      height: 220px;
+      padding: 1.5rem;
+    }
+    .details-circle h3 {
+      font-size: 2.2rem;
+    }
+    .key-placeholder {
+      width: 70px;
+      right: -18px;
+    }
+    .scratch-card-wrapper {
+      width: min(320px, 100%);
+      height: auto;
+      aspect-ratio: 320 / 190;
+    }
+    .countdown-box {
+      width: min(320px, 100%);
+    }
+    .story-polaroid {
+      width: 120px;
+    }
+    .story-polaroid .img-placeholder {
+      height: 140px;
+    }
+    .letter-popup-bg {
+      max-width: 100vw;
+    }
+    .letter-text-overlay {
+      padding: 12% 8%; 
+    }
+  }
+
+  @media (max-width: 360px) {
+    .scrapbook-container {
+      padding: 1.5rem 0.75rem;
+    }
+    .playlist-row .envelope-img {
+      width: 100px;
+    }
+    .vinyl-wrapper {
+      width: 140px;
+      height: 100px;
+    }
+    .vinyl-disc,
+    .vinyl-cover {
+      width: 100px;
+      height: 100px;
+    }
+    .details-circle {
+      width: 200px;
+      height: 200px;
     }
   }
 </style>
@@ -858,7 +1125,7 @@
   <div class="scrapbook-container" id="main-content">
     
     <div class="playlist-row">
-      <img src="Envelope_Opened.png" alt="Opened Envelope" class="envelope-img reveal-item">
+      <img src="Envelope_Opened.png" alt="Opened Envelope" class="envelope-img reveal-item" onclick="openLetter()">
       <div class="vinyl-container reveal-item" id="vinyl-btn" onclick="toggleMusic()">
         <div class="vinyl-wrapper">
           <img src="Vinyl_Disc.png"  class="vinyl-disc"  alt="Vinyl Disc">
@@ -875,7 +1142,7 @@
       
       <div class="main-invite-card reveal-scale-tl">
         <p class="pre-title">Invitation<br>To Celebrate<br>The Wedding Of</p>
-        <h3>Tanuj<br>&amp;<br>Kanchan</h3>
+        <h3>Tanuj<br>&<br>Kanchan</h3>
         <p style="font-style: italic; font-size: clamp(0.9rem, 1.6vw, 1.1rem); margin-top: clamp(1.4rem, 3vw, 2rem); color: #666;">
           Indraprashta Tower<br>Akola, Maharashtra
         </p>
@@ -889,9 +1156,9 @@
       <img src="Flowers.png" alt="" class="floral-venue">
       <h3>The Venue</h3>
       <p class="pre-title">Click Here</p>
-      <div class="img-placeholder key-placeholder">Key</div>
+      <img src="Key.png" alt="Key" class="key-placeholder">
       <div class="polaroid" style="position: absolute; bottom: -20px; right: 20px; width: 80px; height: 100px; --rot: 12; padding: 5px 5px 20px 5px;">
-        <div class="img-placeholder" style="width: 100%; height: 100%; font-size: 0.6rem;">Img</div>
+        <img src="Indraprastha.jpg" alt="Indraprastha Tower" style="width: 100%; height: 100%; object-fit: cover; display: block;">
       </div>
     </div>
 
@@ -916,6 +1183,7 @@
 
     <div class="countdown-section">
       <img src="Flowers.png" alt="" class="floral-countdown reveal-item">
+      <img src="Flowers.png" alt="" class="floral-countdown-right reveal-item">
       <p class="scratch-label reveal-item">✦ Scratch to reveal the date ✦</p>
 
       <div class="scratch-card-wrapper reveal-item">
@@ -945,11 +1213,75 @@
 
   </div>
 
+  <div id="letter-modal" class="modal-overlay hidden" onclick="closeLetter()">
+    <div class="letter-popup-wrapper">
+      <img src="Letter.png" alt="Letter Background" class="letter-popup-bg">
+      <div class="letter-text-overlay">
+        
+        <h2 class="letter-title">You Are Summoned</h2>
+        
+        <p class="letter-p">Dear Guest,</p>
+        
+        <p class="letter-p">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Yes, we are actually doing this. Consider this your formal, legally non-binding summons to the wedding of Tanuj and Kanchan. Winter is coming, but our eternal bondage is arriving much sooner.</p>
+        
+        <p class="letter-p">Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Please prepare yourself for an evening of forced socialization, dry chicken, and an open bar—which, let's be honest, is the only reason you are still reading this. One does not simply walk into Mordor, but you <em>are</em> expected to walk into this venue by 4:00 PM sharp.</p>
+
+        <h3 class="letter-subtitle">The Details (Or Whatever)</h3>
+        
+        <ul class="letter-list">
+          <li><strong>When:</strong> June 22, 2026. Be there, or we will assume you were snapped by Thanos.</li>
+          <li><strong>Where:</strong> Indraprashta Tower, Akola. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</li>
+          <li><strong>Dress Code:</strong> Wear clothes. Just don't wear white, or the bride will go full Daenerys Targaryen on King's Landing.</li>
+        </ul>
+
+        <p class="letter-p">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. We have hired a DJ who has sworn a blood oath to play "Mr. Brightside" at least once. If you refuse to aggressively sing along, the Demogorgons will be released.</p>
+
+        <p class="letter-p">Please RSVP by May 22, 2026. Excepteur sint occaecat cupidatat non proident. If you do not respond, we will assume you are permanently trapped in the Upside Down and will give your slice of cake to someone we actually like. May the Force be with you, because we are certainly going to need it.</p>
+
+        <p class="letter-sign-off">Reluctantly tying the knot,</p>
+        <p class="letter-signature">Tanuj & Kanchan</p>
+
+      </div>
+    </div>
+  </div>
+
 <script>
   // Always start at the top and lock scroll while splash is showing
   history.scrollRestoration = 'manual';
   window.scrollTo(0, 0);
   document.body.style.overflow = 'hidden';
+
+  // ── Music Player references ──
+  const bgMusic = document.getElementById('bg-music');
+  const vinylBtn = document.getElementById('vinyl-btn');
+  let isPlaying = false;
+
+  function setPlaying(playing) {
+    isPlaying = playing;
+    vinylBtn.classList.toggle('playing', playing);
+  }
+
+  function toggleMusic() {
+    if (isPlaying) {
+      bgMusic.pause();
+      setPlaying(false);
+    } else {
+      bgMusic.play()
+        .then(() => setPlaying(true))
+        .catch(e => console.log("Audio play failed:", e));
+    }
+  }
+
+  // ── Letter Modal Logic ──────────────────────────────────────────
+  function openLetter() {
+    document.getElementById('letter-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; 
+  }
+
+  function closeLetter() {
+    document.getElementById('letter-modal').classList.add('hidden');
+    document.body.style.overflow = ''; 
+  }
 
   // ── Petal Rain Generator ────────────────────────────────────────
   function createPetals() {
@@ -964,7 +1296,6 @@
       petal.src = `Petal-${randomImageNum}.png`;
       petal.classList.add('falling-petal');
       
-      // Changed to render exactly between 15px and 45px
       const size = Math.random() * 30 + 15; 
       const leftPos = Math.random() * 100; 
       const fallDuration = Math.random() * 5 + 7; 
@@ -981,7 +1312,6 @@
   }
   createPetals();
 
-
   // Splash Screen Logic
   function openInvite() {
     const splash = document.getElementById('splash-screen');
@@ -997,21 +1327,19 @@
       startRevealObserver();
     }, 600);
 
-    bgMusic.play().catch(e => console.log("Audio play failed:", e));
-    isPlaying = true;
-    vinylBtn.classList.add('playing');
+    bgMusic.play()
+      .then(() => setPlaying(true))
+      .catch(e => console.log("Audio play failed:", e));
   }
 
   // ── Staggered reveal: initial cascade + scroll-triggered ─────────
   function startRevealObserver() {
     const items = [...document.querySelectorAll('.reveal-item, .reveal-polaroid, .reveal-line, .reveal-scale-tl')];
-    // Tag each item with its DOM order so we can stagger consistently
     items.forEach((el, i) => { el.dataset.revealIdx = i; });
 
     const STAGGER_MS = 120;
 
     const observer = new IntersectionObserver((entries) => {
-      // Only consider entries that just became visible
       const incoming = entries
         .filter(e => e.isIntersecting && !e.target.classList.contains('revealed'))
         .sort((a, b) => (+a.target.dataset.revealIdx) - (+b.target.dataset.revealIdx));
@@ -1027,22 +1355,6 @@
     });
 
     items.forEach(el => observer.observe(el));
-  }
-
-  // Music Player Toggle
-  const bgMusic = document.getElementById('bg-music');
-  const vinylBtn = document.getElementById('vinyl-btn');
-  let isPlaying = false;
-
-  function toggleMusic() {
-    if (isPlaying) {
-      bgMusic.pause();
-      vinylBtn.classList.remove('playing');
-    } else {
-      bgMusic.play().catch(e => console.log("Audio play failed:", e));
-      vinylBtn.classList.add('playing');
-    }
-    isPlaying = !isPlaying;
   }
 
   // ── Scratch Card ──────────────────────────────────────────
@@ -1192,7 +1504,7 @@
     }
   }
 
-  setInterval(() => {
+  let scratchCheckInterval = setInterval(() => {
     if (scratchDone || !scratchStarted) return;
     try {
       const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
@@ -1206,6 +1518,7 @@
     if (scratchDone) return;
     scratchDone = true;
     clearTimeout(fallbackTimer);
+    clearInterval(scratchCheckInterval);
 
     ctx.globalCompositeOperation = 'destination-out';
     ctx.fillStyle = 'rgba(0,0,0,1)';
