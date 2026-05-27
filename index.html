@@ -7,13 +7,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  /* ════ CUSTOM SCROLLBAR ════ */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #2C3B2E55, #2C3B2Eaa, #2C3B2E55);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2C3B2E;
+  }
+  /* Firefox */
   html {
+    scrollbar-width: thin;
+    scrollbar-color: #2C3B2E88 transparent;
     scroll-behavior: smooth;
   }
 
   body {
     font-family: 'Cormorant Garamond', serif;
-    background: #FAF7F2 url('Sof_Botanical_Background.png') center center / cover fixed;
+    background: #FAF7F2;
     color: #333;
     overflow-x: hidden;
     display: flex;
@@ -29,6 +46,11 @@
   @keyframes envelopeEntrance {
     0% { opacity: 0; transform: translateY(30px) scale(1.05); }
     100% { opacity: 1; transform: translateY(0) scale(1.1); }
+  }
+
+  @keyframes sweepUp {
+    0%   { opacity: 0; transform: rotate(15deg) translateY(40px); }
+    100% { opacity: 1; transform: rotate(15deg) translateY(0); }
   }
   
   @keyframes elegantFloat {
@@ -77,11 +99,33 @@
     100% { transform: translateX(30px) rotate(45deg); }
   }
 
+  /* ════ FIXED BACKGROUND LAYER ════ */
+  #bg-fixed {
+    position: fixed;
+    inset: 0;
+    background: url('Sof_Botanical_Background.png') right center / cover;
+    z-index: -2;
+  }
+
+  #bg-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+  }
+
+  @media (max-width: 600px) {
+    #bg-overlay {
+      background: rgba(250, 247, 242, 0.55);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+    }
+  }
+
   /* ════ SPLASH SCREEN (FRONT DOOR) ════ */
   #splash-screen {
     position: fixed;
     inset: 0;
-    background: url('Sof_Botanical_Background.png') center center / cover;
+    background: transparent;
     z-index: 9999;
     display: flex;
     flex-direction: column;
@@ -182,10 +226,11 @@
     width: clamp(120px, 30vw, 180px); 
     height: auto;
     z-index: 5; 
-    pointer-events: none; 
+    pointer-events: none;
+    opacity: 0;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
-    transform: rotate(15deg); 
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
+    animation: sweepUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 2.2s forwards;
   }
 
   /* Envelope & Flower reactive hover states */
@@ -194,7 +239,7 @@
     filter: drop-shadow(0 30px 45px rgba(0,0,0,0.25));
   }
   #splash-envelope-wrapper:hover .splash-flowers {
-    transform: scale(1.06) rotate(13.5deg); 
+    transform: rotate(13.5deg) scale(1.06);
     filter: drop-shadow(0 15px 25px rgba(0,0,0,0.2));
   }
 
@@ -205,7 +250,7 @@
     transition: transform 0.1s ease, filter 0.1s ease;
   }
   #splash-envelope-wrapper:active .splash-flowers {
-    transform: scale(0.96) rotate(15deg);
+    transform: rotate(15deg) scale(0.96);
     filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
     transition: transform 0.1s ease, filter 0.1s ease;
   }
@@ -239,21 +284,6 @@
     text-transform: uppercase;
     color: #666;
     text-align: center;
-  }
-
-  /* Image Placeholders */
-  .img-placeholder {
-    background: #e0e0e0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #888;
-    font-family: 'Jost', sans-serif;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    overflow: hidden;
-    position: relative;
   }
 
   /* Polaroid Style */
@@ -293,20 +323,37 @@
     margin-top: 1rem;
   }
 
-  .playlist-row .envelope-img {
+  .envelope-wrapper {
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+  .envelope-wrapper .envelope-img {
     width: clamp(140px, 38vw, 260px);
     height: auto;
     object-fit: contain;
-    flex-shrink: 0;
-    cursor: pointer;
+    display: block;
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
   }
-  .playlist-row .envelope-img:hover {
+  .envelope-wrapper:hover .envelope-img {
     transform: scale(1.05) rotate(-2deg);
     filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));
   }
-  .playlist-row .envelope-img:active {
+  .envelope-wrapper:active .envelope-img {
     transform: scale(0.97) rotate(0deg);
+  }
+  .envelope-hint {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.4rem;
+    color: #2C3B2E;
+    white-space: nowrap;
+    pointer-events: none;
+    text-shadow: 0 1px 8px rgba(250,247,242,0.9), 0 0 20px rgba(250,247,242,0.8);
   }
 
   .vinyl-container {
@@ -407,10 +454,10 @@
   }
   .photo-left {
     position: absolute;
-    left: 5%;
-    top: 10%;
-    width: 180px;
-    height: 240px;
+    left: 2%;
+    top: 5%;
+    width: 230px;
+    height: 300px;
     z-index: 3;
     --rot: -6;
   }
@@ -522,36 +569,43 @@
     50%      { transform: translateY(-4px) rotate(25deg) scaleX(-1); }
   }
 
-  /* ════ THE VENUE CIRCLE ════ */
-  .details-circle {
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    display: flex;
-    flex-direction: column;
+  /* ════ THE VENUE PLATE ════ */
+  .venue-plate-wrapper {
+    position: relative;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    text-align: center;
-    padding: 2rem;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, filter 0.3s ease;
   }
-  .details-circle:hover {
+  .venue-plate-wrapper:hover {
     transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.14);
+    filter: drop-shadow(0 18px 30px rgba(0,0,0,0.18));
   }
-  .details-circle h3 {
+  .venue-plate-img {
+    width: clamp(220px, 55vw, 320px);
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.12));
+  }
+  .venue-plate-content {
+    position: absolute;
+    text-align: center;
+    pointer-events: none;
+  }
+  .venue-plate-content h3 {
     font-family: 'Great Vibes', cursive;
     font-size: 2.5rem;
     color: #2C3B2E;
     text-shadow: 0 4px 16px rgba(44, 59, 46, 0.1);
+    line-height: 1;
+  }
+  .venue-plate-content .pre-title {
+    margin-top: 0.3rem;
   }
   .key-placeholder {
     position: absolute;
-    right: -30px;
+    right: -10px;
     top: 50%;
     width: 90px;
     height: auto;
@@ -569,16 +623,15 @@
     margin-top: 1rem;
   }
   .story-polaroid {
-    width: 140px;
+    width: 200px;
     text-align: center;
   }
-  .story-polaroid .img-placeholder {
-    width: 100%;
-    height: 160px;
+  .story-polaroid img {
+    height: 230px !important;
   }
   .story-polaroid p {
     font-family: 'Great Vibes', cursive;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     margin-top: 10px;
     color: #2C3B2E;
   }
@@ -732,18 +785,22 @@
 
   .countdown-box {
     background: #fff;
-    padding: 1.5rem 2rem;
     border-radius: 20px;
     text-align: center;
     width: 320px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.07);
     opacity: 0;
     transform: translateY(12px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 2rem;
+    transition: opacity 0.8s ease, transform 0.8s ease, max-height 0.8s ease, padding 0.8s ease;
   }
   .countdown-box.visible {
     opacity: 1;
     transform: translateY(0);
+    max-height: 500px;
+    padding: 1.5rem 2rem;
   }
   .countdown-box h3 {
     font-family: 'Great Vibes', cursive;
@@ -824,11 +881,11 @@
 
   .reveal-scale-tl {
     opacity: 0;
-    transform: scale(0);
+    transform: scale(0.88);
     transform-origin: top left;
     transition:
-      opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1),
-      transform 0.9s cubic-bezier(0.34, 1.35, 0.64, 1);
+      opacity 0.8s ease,
+      transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
     will-change: opacity, transform;
   }
   .reveal-scale-tl.revealed {
@@ -866,6 +923,33 @@
     pointer-events: none;
   }
   
+  .letter-close-btn {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    width: calc(100% + 2px);
+    margin: 1.5rem -1px -1px -1px;
+    padding: 0.9rem;
+    background: #2C3B2E;
+    color: #FAF7F2;
+    border: none;
+    border-radius: 0 0 12px 12px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background 0.2s ease;
+    flex-shrink: 0;
+  }
+  .letter-close-btn:hover {
+    background: #1e2e20;
+  }
+
   /* Wrapper dynamically sizes itself to the image inside */
   .letter-popup-wrapper {
     position: relative;
@@ -969,9 +1053,6 @@
 
   /* Responsive fixes */
   @media (max-width: 600px) {
-    body {
-      background-attachment: scroll;
-    }
     .scrapbook-container {
       padding: 2rem 1rem;
       gap: 3rem;
@@ -1042,14 +1123,6 @@
       top: -10px;
       right: 2%;
     }
-    .details-circle {
-      width: 220px;
-      height: 220px;
-      padding: 1.5rem;
-    }
-    .details-circle h3 {
-      font-size: 2.2rem;
-    }
     .key-placeholder {
       width: 70px;
       right: -18px;
@@ -1063,10 +1136,10 @@
       width: min(320px, 100%);
     }
     .story-polaroid {
-      width: 120px;
+      width: 160px;
     }
-    .story-polaroid .img-placeholder {
-      height: 140px;
+    .story-polaroid img {
+      height: 185px !important;
     }
     .letter-popup-bg {
       max-width: 100vw;
@@ -1074,6 +1147,315 @@
     .letter-text-overlay {
       padding: 12% 8%; 
     }
+  }
+
+  /* ════ ADD TO CALENDAR BUTTON ════ */
+  .cal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #2C3B2E;
+    background: transparent;
+    border: 1px solid rgba(44,59,46,0.3);
+    padding: 0.55rem 1.4rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .cal-btn:hover {
+    background: #2C3B2E;
+    color: #FAF7F2;
+    border-color: #2C3B2E;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(44,59,46,0.2);
+  }
+
+  /* ════ SECTION DIVIDER ════ */
+  .section-divider {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #c8b89a;
+  }
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #c8b89a, transparent);
+  }
+  .section-divider span {
+    font-size: 0.9rem;
+    color: #c8b89a;
+  }
+
+  /* ════ TIMELINE ════ */
+  .timeline-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2rem 2.5rem;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+    position: relative;
+  }
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 80px 28px 1fr;
+    gap: 0 1rem;
+    align-items: start;
+    position: relative;
+  }
+  .timeline-item:not(.last)::after {
+    content: '';
+    position: absolute;
+    left: calc(80px + 14px + 1rem - 1px);
+    top: 28px;
+    bottom: -1.5rem;
+    width: 2px;
+    background: linear-gradient(to bottom, #2C3B2E30, #2C3B2E10);
+  }
+  .timeline-item + .timeline-item {
+    margin-top: 1.5rem;
+  }
+  .timeline-time {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: #888;
+    text-align: right;
+    padding-top: 5px;
+  }
+  .timeline-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #2C3B2E;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 2px rgba(44,59,46,0.2);
+    flex-shrink: 0;
+  }
+  .timeline-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding-top: 4px;
+  }
+  .timeline-content strong {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #2C3B2E;
+  }
+  .timeline-content span {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.78rem;
+    color: #888;
+    letter-spacing: 0.03em;
+  }
+
+  /* ════ DRESS CODE (FREE) ════ */
+  .dresscode-free-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2.2rem 2rem;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .dresscode-free-icon {
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .dresscode-free-main {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    color: #2C3B2E;
+    font-weight: 600;
+  }
+  .dresscode-free-sub {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.82rem;
+    color: #888;
+    line-height: 1.7;
+    letter-spacing: 0.03em;
+    max-width: 360px;
+  }
+
+  /* ════ RSVP ════ */
+  .rsvp-card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+  .rsvp-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .rsvp-label {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #888;
+  }
+  .rsvp-input {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: #333;
+    background: #FAF7F2;
+    border: 1px solid rgba(44,59,46,0.12);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+  }
+  .rsvp-input:focus {
+    border-color: rgba(44,59,46,0.4);
+    box-shadow: 0 0 0 3px rgba(44,59,46,0.06);
+  }
+  .rsvp-textarea {
+    resize: none;
+    min-height: 90px;
+    font-size: 0.95rem;
+  }
+  .rsvp-toggle-row {
+    display: flex;
+    gap: 0.75rem;
+  }
+  .rsvp-toggle {
+    flex: 1;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    padding: 0.65rem 0.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(44,59,46,0.15);
+    background: #FAF7F2;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .rsvp-toggle.active {
+    background: #2C3B2E;
+    color: #FAF7F2;
+    border-color: #2C3B2E;
+  }
+  .rsvp-counter-row {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  .rsvp-counter-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(44,59,46,0.2);
+    background: #FAF7F2;
+    color: #2C3B2E;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  .rsvp-counter-btn:hover {
+    background: #2C3B2E;
+    color: #FAF7F2;
+  }
+  .rsvp-counter-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    color: #2C3B2E;
+    min-width: 2rem;
+    text-align: center;
+  }
+  .rsvp-submit-btn {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #FAF7F2;
+    background: #2C3B2E;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(44,59,46,0.2);
+  }
+  .rsvp-submit-btn:hover {
+    background: #1e2e20;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(44,59,46,0.28);
+  }
+  .rsvp-hint {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.8rem;
+    text-align: center;
+    color: #888;
+    min-height: 1.2em;
+    transition: color 0.3s ease;
+  }
+
+  /* ════ FOOTER ════ */
+  .footer-section {
+    width: 100%;
+    text-align: center;
+    padding: 3rem 1rem 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .footer-pre {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #aaa;
+  }
+  .footer-names {
+    font-family: 'Great Vibes', cursive !important;
+    font-size: clamp(3rem, 10vw, 5rem) !important;
+    color: #2C3B2E;
+    margin: 0 !important;
+  }
+  .footer-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: #888;
+    margin-top: 0.3rem;
+  }
+  .footer-credit {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #bbb;
+    margin-top: 1rem;
   }
 
   @media (max-width: 360px) {
@@ -1101,6 +1483,8 @@
 </head>
 <body>
 
+  <div id="bg-fixed"></div>
+  <div id="bg-overlay"></div>
   <div id="petal-container"></div>
 
   <audio id="bg-music" loop>
@@ -1125,7 +1509,10 @@
   <div class="scrapbook-container" id="main-content">
     
     <div class="playlist-row">
-      <img src="Envelope_Opened.png" alt="Opened Envelope" class="envelope-img reveal-item" onclick="openLetter()">
+      <div class="envelope-wrapper reveal-item" onclick="openLetter()">
+        <img src="Envelope_Opened.png" alt="Opened Envelope" class="envelope-img">
+        <span class="envelope-hint">Tap to Read</span>
+      </div>
       <div class="vinyl-container reveal-item" id="vinyl-btn" onclick="toggleMusic()">
         <div class="vinyl-wrapper">
           <img src="Vinyl_Disc.png"  class="vinyl-disc"  alt="Vinyl Disc">
@@ -1137,7 +1524,7 @@
     <div class="collage-row">
       <div class="polaroid photo-left reveal-polaroid" style="--rot: -8;">
         <div class="tape"></div>
-        <div class="img-placeholder" style="width: 100%; height: 100%;">Image 1</div>
+        <img src="Image 1.png" alt="Tanuj & Kanchan" style="width: 100%; height: 100%; object-fit: cover; display: block;">
       </div>
       
       <div class="main-invite-card reveal-scale-tl">
@@ -1152,12 +1539,15 @@
       <img src="Flowers.png" alt="" class="floral-bottom-left reveal-item">
     </div>
 
-    <div class="details-circle reveal-item" onclick="window.open('https://www.google.com/maps/search/?api=1&query=P276+M2R,+New+Radhakisan+Plots,+Ranpise+Nagar,+Akola,+Maharashtra+444005', '_blank')">
+    <div class="venue-plate-wrapper reveal-item" onclick="window.open('https://www.google.com/maps/search/?api=1&query=P276+M2R,+New+Radhakisan+Plots,+Ranpise+Nagar,+Akola,+Maharashtra+444005', '_blank')">
       <img src="Flowers.png" alt="" class="floral-venue">
-      <h3>The Venue</h3>
-      <p class="pre-title">Click Here</p>
+      <img src="Plate.png" alt="The Venue" class="venue-plate-img">
+      <div class="venue-plate-content">
+        <h3>The Venue</h3>
+        <p class="pre-title">Tap Here</p>
+      </div>
       <img src="Key.png" alt="Key" class="key-placeholder">
-      <div class="polaroid" style="position: absolute; bottom: -20px; right: 20px; width: 80px; height: 100px; --rot: 12; padding: 5px 5px 20px 5px;">
+      <div class="polaroid" style="position: absolute; bottom: 10px; right: 10px; width: 105px; height: 130px; --rot: 12; padding: 6px 6px 25px 6px;">
         <img src="Indraprastha.jpg" alt="Indraprastha Tower" style="width: 100%; height: 100%; object-fit: cover; display: block;">
       </div>
     </div>
@@ -1167,15 +1557,15 @@
       <p class="pre-title reveal-item">Click Here</p>
       <div class="story-row">
         <div class="polaroid story-polaroid reveal-polaroid" style="--rot: -4;">
-          <div class="img-placeholder">Image</div>
+          <img src="Once.png" alt="Once" style="width: 100%; height: 160px; object-fit: cover; display: block;">
           <p>Once</p>
         </div>
         <div class="polaroid story-polaroid reveal-polaroid" style="--rot: 2;">
-          <div class="img-placeholder">Image</div>
+          <img src="Upon.png" alt="Upon" style="width: 100%; height: 160px; object-fit: cover; display: block;">
           <p>Upon</p>
         </div>
         <div class="polaroid story-polaroid reveal-polaroid" style="--rot: -6;">
-          <div class="img-placeholder">Image</div>
+          <img src="A Time.png" alt="A Time" style="width: 100%; height: 160px; object-fit: cover; display: block;">
           <p>A Time</p>
         </div>
       </div>
@@ -1206,40 +1596,175 @@
         </div>
         <p style="margin-top: 1.2rem; font-family: 'Jost', sans-serif; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #aaa;">Until the Big Day</p>
         <p style="margin-top: 0.5rem; font-family: 'Great Vibes', cursive; font-size: 1.8rem; color: #2C3B2E; line-height: 1.2;">With love & gratitude,<br>Tanuj and Kanchan</p>
+        <button class="cal-btn" onclick="addToCalendar()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Add to Calendar
+        </button>
       </div>
+    </div>
+
+    <!-- ════ DIVIDER ════ -->
+    <div class="section-divider reveal-item">
+      <span>✦</span>
+    </div>
+
+    <!-- ════ WEDDING DAY TIMELINE ════ -->
+    <div style="text-align: center; width: 100%;" class="reveal-item">
+      <p class="pre-title">The Big Day</p>
+      <h2>The Schedule</h2>
+    </div>
+    <div class="timeline-card reveal-item">
+      <div class="timeline-item">
+        <div class="timeline-time">10:00 AM</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <strong>Guests Arrive</strong>
+          <span>Welcome & seating at Indraprashta Tower</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">12:30 PM</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <strong>The Wedding Ceremony</strong>
+          <span>Where forever officially begins</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">1:30 PM</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <strong>Celebrations & Lunch</strong>
+          <span>Food, family, and a lot of laughter</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">4:00 PM</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <strong>Music & Dancing</strong>
+          <span>The DJ has been briefed. The floor is yours.</span>
+        </div>
+      </div>
+      <div class="timeline-item last">
+        <div class="timeline-time">7:00 PM</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <strong>Farewell & Blessings</strong>
+          <span>Send us off with your love ✨</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ DIVIDER ════ -->
+    <div class="section-divider reveal-item">
+      <span>✦</span>
+    </div>
+
+    <!-- ════ DRESS CODE ════ -->
+    <div style="text-align: center; width: 100%;" class="reveal-item">
+      <p class="pre-title">What to Wear</p>
+      <h2>Dress Code</h2>
+    </div>
+    <div class="dresscode-free-card reveal-item">
+      <p class="dresscode-free-icon">🌸</p>
+      <p class="dresscode-free-main">Wear whatever makes you feel <em>you</em>.</p>
+      <p class="dresscode-free-sub">Come as you are — dressed up, dressed down, or dressed in whatever makes you smile. The only thing we ask is that you bring your joy.</p>
+    </div>
+
+    <!-- ════ DIVIDER ════ -->
+    <div class="section-divider reveal-item">
+      <span>✦</span>
+    </div>
+
+    <!-- ════ RSVP SECTION ════ -->
+    <div style="text-align: center; width: 100%;" class="reveal-item">
+      <p class="pre-title">Kindly Reply By June 10, 2026</p>
+      <h2>RSVP</h2>
+    </div>
+    <div class="rsvp-card reveal-item">
+      <div class="rsvp-field">
+        <label class="rsvp-label">Your Name</label>
+        <input type="text" class="rsvp-input" id="rsvp-name" placeholder="Full name">
+      </div>
+      <div class="rsvp-field">
+        <label class="rsvp-label">Phone / WhatsApp</label>
+        <input type="tel" class="rsvp-input" id="rsvp-phone" placeholder="+91 00000 00000">
+      </div>
+      <div class="rsvp-field">
+        <label class="rsvp-label">Will you attend?</label>
+        <div class="rsvp-toggle-row">
+          <button class="rsvp-toggle active" id="rsvp-yes" onclick="selectAttend(true)">✓ Joyfully Accept</button>
+          <button class="rsvp-toggle" id="rsvp-no" onclick="selectAttend(false)">✗ Regretfully Decline</button>
+        </div>
+      </div>
+      <div class="rsvp-field" id="rsvp-plus-field">
+        <label class="rsvp-label">Number of Guests</label>
+        <div class="rsvp-counter-row">
+          <button class="rsvp-counter-btn" onclick="changeGuests(-1)">−</button>
+          <span id="rsvp-guest-count" class="rsvp-counter-val">1</span>
+          <button class="rsvp-counter-btn" onclick="changeGuests(1)">+</button>
+        </div>
+      </div>
+      <div class="rsvp-field">
+        <label class="rsvp-label">Message for the Couple <span style="color:#aaa; font-weight:400;">(optional)</span></label>
+        <textarea class="rsvp-input rsvp-textarea" id="rsvp-message" placeholder="Share your wishes, a memory, or your go-to dance move..."></textarea>
+      </div>
+      <button class="rsvp-submit-btn" onclick="submitRSVP()">
+        Send With Love 💌
+      </button>
+      <p class="rsvp-hint" id="rsvp-hint"></p>
+    </div>
+
+    <!-- ════ DIVIDER ════ -->
+    <div class="section-divider reveal-item">
+      <span>✦</span>
+    </div>
+
+    <!-- ════ FOOTER ════ -->
+    <div class="footer-section reveal-item">
+      <p class="footer-pre">June 22, 2026 · Akola, Maharashtra</p>
+      <h2 class="footer-names">Tanuj & Kanchan</h2>
+      <p class="footer-quote">"And so the adventure begins."</p>
+      <p class="footer-credit">Made with love, for our favourite people.</p>
     </div>
 
     <div id="scratch-cursor"></div>
 
   </div>
 
-  <div id="letter-modal" class="modal-overlay hidden" onclick="closeLetter()">
+  <div id="letter-modal" class="modal-overlay hidden">
     <div class="letter-popup-wrapper">
       <img src="Letter.png" alt="Letter Background" class="letter-popup-bg">
       <div class="letter-text-overlay">
         
         <h2 class="letter-title">You Are Summoned</h2>
         
-        <p class="letter-p">Dear Guest,</p>
+        <p class="letter-p">Dear Beloved Guest,</p>
         
-        <p class="letter-p">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Yes, we are actually doing this. Consider this your formal, legally non-binding summons to the wedding of Tanuj and Kanchan. Winter is coming, but our eternal bondage is arriving much sooner.</p>
+        <p class="letter-p">After years of circling each other like two planets with terrible navigation skills, Tanuj and Kanchan have finally decided to make it official. Consider this your formal, legally non-binding summons to witness the moment two people voluntarily choose chaos — together, forever.</p>
         
-        <p class="letter-p">Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Please prepare yourself for an evening of forced socialization, dry chicken, and an open bar—which, let's be honest, is the only reason you are still reading this. One does not simply walk into Mordor, but you <em>are</em> expected to walk into this venue by 4:00 PM sharp.</p>
+        <p class="letter-p">We have crossed rivers, survived families, and sat through each other's questionable music taste. If that isn't love, we don't know what is. And now, we'd like you — yes, <em>you</em> — to be there when we sign the paperwork that makes it someone else's problem too.</p>
 
-        <h3 class="letter-subtitle">The Details (Or Whatever)</h3>
+        <h3 class="letter-subtitle">The Details (Read Carefully)</h3>
         
         <ul class="letter-list">
-          <li><strong>When:</strong> June 22, 2026. Be there, or we will assume you were snapped by Thanos.</li>
-          <li><strong>Where:</strong> Indraprashta Tower, Akola. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</li>
-          <li><strong>Dress Code:</strong> Wear clothes. Just don't wear white, or the bride will go full Daenerys Targaryen on King's Landing.</li>
+          <li><strong>When:</strong> The date has been revealed on your scratch card — check the invitation! Be there, or we will assume you were snapped by Thanos and donate your seat to someone with better punctuality.</li>
+          <li><strong>Where:</strong> Indraprashta Tower, Akola, Maharashtra. It's on the map — we checked. Twice. Bring the link, not excuses.</li>
+          <li><strong>Dress Code:</strong> None! Wear whatever makes you feel wonderful. Come in your finest, your comfiest, or anything in between — as long as you're there, you're dressed perfectly.</li>
+          <li><strong>Food:</strong> Yes, there will be food. Good food. This is the primary reason we know you'll show up, and we've made peace with that.</li>
         </ul>
 
-        <p class="letter-p">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. We have hired a DJ who has sworn a blood oath to play "Mr. Brightside" at least once. If you refuse to aggressively sing along, the Demogorgons will be released.</p>
+        <p class="letter-p">We have carefully curated an evening of dancing, laughter, slightly embarrassing speeches, and at least one uncle who will absolutely steal the dancefloor. The DJ has been briefed. The caterer has been warned. The chaos is pre-approved.</p>
 
-        <p class="letter-p">Please RSVP by May 22, 2026. Excepteur sint occaecat cupidatat non proident. If you do not respond, we will assume you are permanently trapped in the Upside Down and will give your slice of cake to someone we actually like. May the Force be with you, because we are certainly going to need it.</p>
+        <p class="letter-p">Please RSVP by <strong>June 10, 2026</strong> using the RSVP section below. If you do not respond, we will assume you are permanently lost in the Upside Down and will give your slice of cake to someone we like slightly more. This is not a threat. This is a promise.</p>
 
-        <p class="letter-sign-off">Reluctantly tying the knot,</p>
+        <p class="letter-p">We are so glad you exist, and even more glad you're going to be there. May the day be full of joy, the night full of memories, and the morning full of excellent stories.</p>
+
+        <p class="letter-sign-off">With all our love (and mild panic),</p>
         <p class="letter-signature">Tanuj & Kanchan</p>
+
+        <button class="letter-close-btn" onclick="closeLetter()">✕ &nbsp; Close Letter</button>
 
       </div>
     </div>
@@ -1567,6 +2092,57 @@
     document.getElementById('cdH').textContent = String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
     document.getElementById('cdM').textContent = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
     document.getElementById('cdS').textContent = String(Math.floor(diff%60000/1000)).padStart(2,'0');
+  }
+
+  // ── Add to Calendar ────────────────────────────────────────────
+  function addToCalendar() {
+    const start = '20260622T073000Z'; // 12:30 PM IST = 07:30 UTC
+    const end   = '20260622T143000Z'; // 8:00 PM IST = 14:30 UTC
+    const title = encodeURIComponent('Wedding of Tanuj & Kanchan');
+    const loc   = encodeURIComponent('Indraprashta Tower, Akola, Maharashtra 444005');
+    const desc  = encodeURIComponent('You are warmly invited to celebrate the wedding of Tanuj & Kanchan.');
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${desc}&location=${loc}`;
+    window.open(url, '_blank');
+  }
+
+  // ── RSVP Logic ────────────────────────────────────────────────
+  let rsvpAttending = true;
+  let rsvpGuests = 1;
+
+  function selectAttend(val) {
+    rsvpAttending = val;
+    document.getElementById('rsvp-yes').classList.toggle('active', val);
+    document.getElementById('rsvp-no').classList.toggle('active', !val);
+    document.getElementById('rsvp-plus-field').style.display = val ? '' : 'none';
+  }
+
+  function changeGuests(delta) {
+    rsvpGuests = Math.max(1, Math.min(10, rsvpGuests + delta));
+    document.getElementById('rsvp-guest-count').textContent = rsvpGuests;
+  }
+
+  function submitRSVP() {
+    const name    = document.getElementById('rsvp-name').value.trim();
+    const phone   = document.getElementById('rsvp-phone').value.trim();
+    const message = document.getElementById('rsvp-message').value.trim();
+    const hint    = document.getElementById('rsvp-hint');
+
+    if (!name) {
+      hint.style.color = '#c0392b';
+      hint.textContent = 'Please enter your name ♡';
+      return;
+    }
+
+    const status   = rsvpAttending ? 'Joyfully Accepting' : 'Regretfully Declining';
+    const guestStr = rsvpAttending ? `\nGuests: ${rsvpGuests}` : '';
+    const msgStr   = message ? `\n\nMessage: ${message}` : '';
+    const waText   = encodeURIComponent(`💌 RSVP — Tanuj & Kanchan's Wedding\n\nName: ${name}\nPhone: ${phone || 'Not provided'}\nStatus: ${status}${guestStr}${msgStr}`);
+
+    // Open WhatsApp — replace the number below with the couple's WhatsApp number
+    window.open(`https://wa.me/919604159665?text=${waText}`, '_blank');
+
+    hint.style.color = '#2C3B2E';
+    hint.textContent = '✓ Opening WhatsApp — see you there! ♡';
   }
 </script>
 </body>
