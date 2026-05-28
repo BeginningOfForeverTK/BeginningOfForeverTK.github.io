@@ -275,7 +275,7 @@
     line-height: 1;
     text-align: center;
     margin: 1rem 0;
-    text-shadow: 0 4px 18px rgba(44, 59, 46, 0.1);
+    text-shadow: 0 4px 24px rgba(44, 59, 46, 0.14), 0 1px 3px rgba(44, 59, 46, 0.06);
   }
   .pre-title {
     font-family: 'Jost', sans-serif;
@@ -290,13 +290,13 @@
   .polaroid {
     background: #fff;
     padding: 10px 10px 40px 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06);
     transform: rotate(calc(var(--rot, 0) * 1deg));
     transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease;
   }
   .polaroid:hover {
     transform: rotate(0deg) scale(1.03);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    box-shadow: 0 14px 35px rgba(0,0,0,0.14), 0 3px 8px rgba(0,0,0,0.08);
     z-index: 10;
   }
 
@@ -308,8 +308,8 @@
     transform: translateX(-50%) rotate(-2deg);
     width: 60px;
     height: 20px;
-    background: rgba(255,255,255,0.6);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    background: rgba(255, 242, 180, 0.72);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.55);
     z-index: 2;
   }
 
@@ -345,7 +345,7 @@
   }
   .envelope-hint {
     position: absolute;
-    bottom: 12px;
+    bottom: 6%;
     left: 50%;
     transform: translateX(-50%);
     font-family: 'Great Vibes', cursive;
@@ -592,6 +592,7 @@
     position: absolute;
     text-align: center;
     pointer-events: none;
+    transform: translateY(-18px);
   }
   .venue-plate-content h3 {
     font-family: 'Great Vibes', cursive;
@@ -612,6 +613,7 @@
     transform: translateY(-50%) rotate(15deg);
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.18));
     pointer-events: none;
+    z-index: 10;
   }
 
   /* ════ OUR STORY POLAROIDS ════ */
@@ -654,6 +656,11 @@
     text-transform: uppercase;
     color: #666;
     text-align: center;
+    animation: scratchLabelPulse 2.8s ease-in-out infinite;
+  }
+  @keyframes scratchLabelPulse {
+    0%, 100% { opacity: 1; letter-spacing: 0.2em; }
+    50%       { opacity: 0.6; letter-spacing: 0.28em; }
   }
 
   .scratch-card-wrapper {
@@ -812,18 +819,31 @@
     display: flex;
     justify-content: space-around;
     font-family: 'Jost', sans-serif;
+    gap: 0.5rem;
+  }
+  .cd-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
   }
   .cd-item span {
     display: block;
-    font-size: 1.5rem;
-    font-weight: 500;
+    font-size: 2rem;
+    font-weight: 600;
     color: #2C3B2E;
+    background: linear-gradient(145deg, #f6faf6, #edf5ee);
+    border-radius: 12px;
+    padding: 0.35rem 0.7rem;
+    min-width: 3.2rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(44,59,46,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
   }
   .cd-item small {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #888;
+    letter-spacing: 0.12em;
+    color: #999;
   }
 
   /* ════ STAGGERED REVEAL ON LOAD & SCROLL ════ */
@@ -924,11 +944,10 @@
   }
   
   .letter-close-btn {
-    position: sticky;
+    position: absolute;
     bottom: 0;
     left: 0;
-    width: calc(100% + 2px);
-    margin: 1.5rem -1px -1px -1px;
+    width: 100%;
     padding: 0.9rem;
     background: #2C3B2E;
     color: #FAF7F2;
@@ -944,7 +963,7 @@
     justify-content: center;
     gap: 0.5rem;
     transition: background 0.2s ease;
-    flex-shrink: 0;
+    z-index: 5;
   }
   .letter-close-btn:hover {
     background: #1e2e20;
@@ -969,8 +988,8 @@
     display: block;
     width: auto;
     height: auto;
-    max-width: 800px; /* Scaled up maximum width */
-    max-height: 95vh; 
+    max-width: 800px;
+    max-height: 95vh;
     filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));
   }
 
@@ -981,7 +1000,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 10% 8%; /* Scales perfectly with the image dimensions */
+    padding: 10% 8% 4rem;
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -1141,11 +1160,16 @@
     .story-polaroid img {
       height: 185px !important;
     }
-    .letter-popup-bg {
-      max-width: 100vw;
-    }
     .letter-text-overlay {
       padding: 12% 8%; 
+    }
+    .letter-popup-wrapper {
+      width: 100%;
+    }
+    .letter-popup-bg {
+      width: 100%;
+      height: auto;
+      max-width: 100%;
     }
   }
 
@@ -1188,11 +1212,13 @@
     content: '';
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, transparent, #c8b89a, transparent);
+    background: linear-gradient(90deg, transparent, #d4c4a8, transparent);
   }
   .section-divider span {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     color: #c8b89a;
+    letter-spacing: 0.6rem;
+    padding-left: 0.6rem;
   }
 
   /* ════ TIMELINE ════ */
@@ -1240,18 +1266,21 @@
     border: 3px solid #fff;
     box-shadow: 0 0 0 2px rgba(44,59,46,0.2);
     flex-shrink: 0;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
   }
-  .timeline-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    padding-top: 4px;
+  .timeline-item:hover .timeline-dot {
+    box-shadow: 0 0 0 5px rgba(44,59,46,0.12);
+    transform: scale(1.12);
   }
   .timeline-content strong {
     font-family: 'Cormorant Garamond', serif;
     font-weight: 600;
     font-size: 1.05rem;
     color: #2C3B2E;
+    transition: color 0.2s ease;
+  }
+  .timeline-item:hover .timeline-content strong {
+    color: #1a2a1c;
   }
   .timeline-content span {
     font-family: 'Jost', sans-serif;
@@ -1262,7 +1291,8 @@
 
   /* ════ DRESS CODE (FREE) ════ */
   .dresscode-free-card {
-    background: #fff;
+    background: linear-gradient(145deg, #ffffff 0%, #fdf8f0 100%);
+    border: 1px solid rgba(200, 184, 154, 0.22);
     border-radius: 20px;
     padding: 2.2rem 2rem;
     width: 100%;
@@ -1397,18 +1427,19 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: #FAF7F2;
-    background: #2C3B2E;
+    background: linear-gradient(135deg, #2C3B2E 0%, #3d5240 50%, #2C3B2E 100%);
+    background-size: 200% 100%;
     border: none;
     padding: 1rem 2rem;
-    border-radius: 14px;
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 16px rgba(44,59,46,0.2);
+    transition: background-position 0.5s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 20px rgba(44,59,46,0.25);
   }
   .rsvp-submit-btn:hover {
-    background: #1e2e20;
+    background-position: right center;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(44,59,46,0.28);
+    box-shadow: 0 10px 28px rgba(44,59,46,0.32);
   }
   .rsvp-hint {
     font-family: 'Jost', sans-serif;
@@ -1434,7 +1465,7 @@
     font-size: 0.72rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #aaa;
+    color: #777;
   }
   .footer-names {
     font-family: 'Great Vibes', cursive !important;
@@ -1446,15 +1477,21 @@
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-size: 1.05rem;
-    color: #888;
+    color: #555;
     margin-top: 0.3rem;
+  }
+  .footer-ornament {
+    font-size: 0.75rem;
+    color: #c8b89a;
+    letter-spacing: 0.4rem;
+    margin-top: 0.4rem;
   }
   .footer-credit {
     font-family: 'Jost', sans-serif;
     font-size: 0.7rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: #bbb;
+    color: #888;
     margin-top: 1rem;
   }
 
@@ -1547,14 +1584,13 @@
         <p class="pre-title">Tap Here</p>
       </div>
       <img src="Key.png" alt="Key" class="key-placeholder">
-      <div class="polaroid" style="position: absolute; bottom: 10px; right: 10px; width: 105px; height: 130px; --rot: 12; padding: 6px 6px 25px 6px;">
+      <div class="polaroid venue-thumb-polaroid" style="position: absolute; bottom: 10px; right: 10px; width: 105px; height: 130px; --rot: 12; padding: 6px 6px 25px 6px;">
         <img src="Indraprastha.jpg" alt="Indraprastha Tower" style="width: 100%; height: 100%; object-fit: cover; display: block;">
       </div>
     </div>
 
     <div style="text-align: center; width: 100%;">
-      <h3 class="reveal-item">Our Story</h3>
-      <p class="pre-title reveal-item">Click Here</p>
+      <h2 class="reveal-item">Our Story</h2>
       <div class="story-row">
         <div class="polaroid story-polaroid reveal-polaroid" style="--rot: -4;">
           <img src="Once.png" alt="Once" style="width: 100%; height: 160px; object-fit: cover; display: block;">
@@ -1605,7 +1641,7 @@
 
     <!-- ════ DIVIDER ════ -->
     <div class="section-divider reveal-item">
-      <span>✦</span>
+      <span>✦ ✦ ✦</span>
     </div>
 
     <!-- ════ WEDDING DAY TIMELINE ════ -->
@@ -1658,7 +1694,7 @@
 
     <!-- ════ DIVIDER ════ -->
     <div class="section-divider reveal-item">
-      <span>✦</span>
+      <span>✦ ✦ ✦</span>
     </div>
 
     <!-- ════ DRESS CODE ════ -->
@@ -1674,7 +1710,7 @@
 
     <!-- ════ DIVIDER ════ -->
     <div class="section-divider reveal-item">
-      <span>✦</span>
+      <span>✦ ✦ ✦</span>
     </div>
 
     <!-- ════ RSVP SECTION ════ -->
@@ -1718,7 +1754,7 @@
 
     <!-- ════ DIVIDER ════ -->
     <div class="section-divider reveal-item">
-      <span>✦</span>
+      <span>✦ ✦ ✦</span>
     </div>
 
     <!-- ════ FOOTER ════ -->
@@ -1726,6 +1762,7 @@
       <p class="footer-pre">June 22, 2026 · Akola, Maharashtra</p>
       <h2 class="footer-names">Tanuj & Kanchan</h2>
       <p class="footer-quote">"And so the adventure begins."</p>
+      <p class="footer-ornament">✦ &nbsp; ✦ &nbsp; ✦</p>
       <p class="footer-credit">Made with love, for our favourite people.</p>
     </div>
 
@@ -1764,9 +1801,8 @@
         <p class="letter-sign-off">With all our love (and mild panic),</p>
         <p class="letter-signature">Tanuj & Kanchan</p>
 
-        <button class="letter-close-btn" onclick="closeLetter()">✕ &nbsp; Close Letter</button>
-
       </div>
+      <button class="letter-close-btn" onclick="closeLetter()">✕ &nbsp; Close Letter</button>
     </div>
   </div>
 
